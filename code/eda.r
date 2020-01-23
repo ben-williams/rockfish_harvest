@@ -50,13 +50,25 @@ data %>%
 
 data %>% 
   filter(waters!="FED", gstat %in% c(525801:525804)) %>% 
-  mutate(year = year(date)) %>% 
   group_by(year, gstat, Species) %>% 
   mutate(mean = mean(weight, na.rm = T),
          sd = sd(weight, na.rm = T),
          n = n(),
          se = sd / sqrt(n)) %>% 
   ggplot(aes(year, mean, color = gstat)) + 
+  geom_point() +
+  geom_errorbar(aes(ymin = mean-se*2, ymax = mean+se*2)) 
+
+# weight dol
+
+data %>% 
+  filter(gstat %in% c(525801:525804), species== 142, year==1997) %>% 
+  group_by(gstat, date) %>% 
+  mutate(mean = mean(weight, na.rm = T),
+         sd = sd(weight, na.rm = T),
+         n = n(),
+         se = sd / sqrt(n)) %>% 
+  ggplot(aes(date, mean, color = gstat)) + 
   geom_point() +
   geom_errorbar(aes(ymin = mean-se*2, ymax = mean+se*2)) 
 
